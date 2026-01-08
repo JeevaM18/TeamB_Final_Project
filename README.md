@@ -119,7 +119,7 @@ streamlit run app.py
 
 ## 👨‍💻 Team
 
-Jeeva M, Nishtha Mishra, Swayam Bora, Siri Reddy, Srinivas, Utkarsh Gupta
+Jeeva M, Nishtha Mishra, Swayam Bora, Riya, Siri Reddy, Srinivas, Utkarsh Gupta
 
 ---
 
