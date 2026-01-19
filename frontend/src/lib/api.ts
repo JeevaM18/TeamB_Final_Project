@@ -10,16 +10,27 @@ const api = axios.create({
 });
 
 export interface ConfigResponse {
-  llm: { default_model: string };
-  ollama: { model_name: string };
-  gemini: { model_name: string; api_key: string };
+  llm: {
+    default_model: string;
+    available_models: string[];
+  };
+  ollama: {
+    model_name: string;
+    temperature: number;
+    timeout: number;
+  };
+  qwen: {
+    model_name: string;
+    temperature: number;
+  };
 }
 
 export interface AnalyzeRequest {
   message: string;
-  model_type: 'gemma' | 'gemini';
-  model_name: string;
-  api_key: string;
+  model_type: 'gemma' | 'qwen';
+  model_name?: string;
+  api_key?: string;
+  temperature?: number;
 }
 
 export interface AnalyzeResponse {
@@ -68,7 +79,7 @@ export interface ModelMetrics {
 
 export interface CompareModelsResponse {
   gemma: ModelMetrics;
-  gemini: ModelMetrics;
+  qwen: ModelMetrics;
 }
 
 export const getConfig = async (): Promise<ConfigResponse> => {
@@ -95,5 +106,25 @@ export const compareModels = async (request: CompareModelsRequest): Promise<Comp
   const response = await api.post<CompareModelsResponse>('/compare_models', request);
   return response.data;
 };
+
+// Add this to api.ts
+
+export interface HistoryItem {
+  timestamp: string;
+  input: string;
+  model: string;
+  intent: string;
+  confidence: number;
+}
+
+export const getHistory = async (): Promise<HistoryItem[]> => {
+  const response = await api.get<HistoryItem[]>('/history'); // your backend endpoint
+  return response.data;
+};
+
+export const clearHistory = async (): Promise<void> => {
+  await api.delete('/history'); // your backend endpoint to clear history
+};
+
 
 export default api;

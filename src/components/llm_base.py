@@ -16,7 +16,8 @@ class BaseNLUModel(ABC):
         {
             "intent": str,
             "confidence": float,
-            "entities": dict
+            "entities": dict,
+            "response": str
         }
         """
         pass

@@ -15,7 +15,7 @@ interface Message {
 }
 
 interface SingleQueryTabProps {
-  modelType: 'gemma' | 'gemini';
+  modelType: 'gemma' | 'qwen';
   modelName: string;
   showRawPrompt: boolean;
 }

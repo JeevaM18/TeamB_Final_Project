@@ -1,47 +1,38 @@
+# src/components/qwen_nlu.py
 import json
+import subprocess
 import re
-import google.generativeai as genai
 from src.components.llm_base import BaseNLUModel
 from src.utils.prompt_template import build_nlu_prompt
 
 
-class GeminiNLU(BaseNLUModel):
+class QwenNLU(BaseNLUModel):
 
-    def __init__(self, model_name: str, api_key: str, temperature: float = 0.3):
+    def __init__(self, model_name: str):
         super().__init__(model_name)
-        genai.configure(api_key=api_key)
-        self.model_name = model_name
-        self.temperature = temperature
-        self.model = genai.GenerativeModel(model_name)
 
     def predict(self, text, intents_schema):
         prompt = build_nlu_prompt(text, intents_schema)
 
-        try:
-            # Set generation config
-            cnt_config = genai.GenerationConfig(
-                temperature=self.temperature
-            )
-            
-            response = self.model.generate_content(
-                prompt,
-                generation_config=cnt_config
-            )
-            
-            raw_output = response.text
-            return self._safe_parse(raw_output)
+        process = subprocess.Popen(
+            ["ollama", "run", self.model_name],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=False
+        )
 
-        except Exception as e:
-            # Graceful handling for Quota Exceeded or other API errors
-            return {
-                "intent": "unknown",
-                "confidence": 0.0,
-                "entities": {},
-                "response": "I'm sorry, I'm having trouble connecting to my service. Please try again in a moment.",
-                "error": f"Gemini error: {str(e)}"
-            }
+        prompt_bytes = prompt.encode('utf-8')
+        stdout_data, stderr_data = process.communicate(input=prompt_bytes)
+        
+        output = stdout_data.decode('utf-8', errors='replace')
+
+        return self._safe_parse(output)
 
     def _safe_parse(self, raw_output: str) -> dict:
+        """
+        Extract JSON safely to avoid hallucinated text
+        """
         # Extract JSON from potential markdown or extra text
         match = re.search(r"\{.*\}", raw_output, re.DOTALL)
 

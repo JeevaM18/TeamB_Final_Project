@@ -57,11 +57,10 @@ const ModelComparisonTab: React.FC = () => {
     >
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-            name === 'gemma' 
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${name === 'gemma'
               ? 'bg-gradient-to-br from-blue-500 to-cyan-500'
               : 'bg-gradient-to-br from-purple-500 to-pink-500'
-          }`}>
+            }`}>
             <span className="text-lg font-bold text-white uppercase">
               {name[0]}
             </span>
@@ -69,7 +68,7 @@ const ModelComparisonTab: React.FC = () => {
           <div>
             <h3 className="font-semibold text-foreground capitalize">{name}</h3>
             <p className="text-xs text-muted-foreground">
-              {name === 'gemma' ? 'Ollama Local' : 'Google Cloud'}
+              {name === 'gemma' ? 'Ollama Local' : 'Ollama Local'}
             </p>
           </div>
         </div>
@@ -98,12 +97,12 @@ const ModelComparisonTab: React.FC = () => {
     </motion.div>
   );
 
-  const getWinner = (): 'gemma' | 'gemini' | null => {
+  const getWinner = (): 'gemma' | 'qwen' | null => {
     if (!data) return null;
     const gemmaScore = (data.gemma.accuracy + data.gemma.precision + data.gemma.recall + data.gemma.f1) / 4;
-    const geminiScore = (data.gemini.accuracy + data.gemini.precision + data.gemini.recall + data.gemini.f1) / 4;
-    if (gemmaScore > geminiScore) return 'gemma';
-    if (geminiScore > gemmaScore) return 'gemini';
+    const qwenScore = (data.qwen.accuracy + data.qwen.precision + data.qwen.recall + data.qwen.f1) / 4;
+    if (gemmaScore > qwenScore) return 'gemma';
+    if (qwenScore > gemmaScore) return 'qwen';
     return null;
   };
 
@@ -177,7 +176,7 @@ const ModelComparisonTab: React.FC = () => {
       {data && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <ModelCard name="gemma" metrics={data.gemma} winner={getWinner() === 'gemma'} />
-          <ModelCard name="gemini" metrics={data.gemini} winner={getWinner() === 'gemini'} />
+          <ModelCard name="qwen" metrics={data.qwen} winner={getWinner() === 'qwen'} />
         </div>
       )}
 
@@ -189,7 +188,7 @@ const ModelComparisonTab: React.FC = () => {
           </div>
           <h4 className="text-foreground font-medium mb-2">Compare Models</h4>
           <p className="text-sm text-muted-foreground">
-            Run a comparison to see how Gemma and Gemini perform side by side.
+            Run a comparison to see how Gemma and Qwen perform side by side.
           </p>
         </div>
       )}

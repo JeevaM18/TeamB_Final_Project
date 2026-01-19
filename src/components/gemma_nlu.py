@@ -19,10 +19,13 @@ class GemmaNLU(BaseNLUModel):
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True
+            text=False
         )
 
-        output, _ = process.communicate(prompt)
+        prompt_bytes = prompt.encode('utf-8')
+        stdout_data, stderr_data = process.communicate(input=prompt_bytes)
+        
+        output = stdout_data.decode('utf-8', errors='replace')
 
         return self._safe_parse(output)
 
@@ -30,13 +33,24 @@ class GemmaNLU(BaseNLUModel):
         """
         Extract JSON safely to avoid hallucinated text
         """
+        # Extract JSON from potential markdown or extra text
         match = re.search(r"\{.*\}", raw_output, re.DOTALL)
 
         if not match:
+            # If no JSON object found, treat the whole raw output as a response if it's text
+            if raw_output and len(raw_output.strip()) > 5:
+                 return {
+                    "intent": "general_conversation",
+                    "confidence": 0.5,
+                    "entities": {},
+                    "response": raw_output.strip()
+                }
             return self._fallback()
 
         try:
-            parsed = json.loads(match.group())
+            # Clean up potential markdown JSON markers if the match included them
+            json_str = match.group()
+            parsed = json.loads(json_str)
             return self._normalize(parsed)
         except Exception:
             return self._fallback()
@@ -45,12 +59,14 @@ class GemmaNLU(BaseNLUModel):
         return {
             "intent": parsed.get("intent", "unknown"),
             "confidence": float(parsed.get("confidence", 0.5)),
-            "entities": parsed.get("entities", {})
+            "entities": parsed.get("entities", {}),
+            "response": parsed.get("response", "I'm sorry, I couldn't generate a specific response. How can I help you?")
         }
 
     def _fallback(self):
         return {
             "intent": "unknown",
             "confidence": 0.0,
-            "entities": {}
+            "entities": {},
+            "response": "I'm here to help! Could you please clarify your request or provide more details?"
         }

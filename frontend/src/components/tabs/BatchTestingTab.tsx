@@ -1,27 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { batchTest, BatchTestResult } from '@/lib/api';
-
-const SAMPLE_INTENTS = [
-  'greeting',
-  'farewell',
-  'help_request',
-  'order_status',
-  'product_inquiry',
-  'complaint',
-  'feedback',
-  'booking',
-  'cancellation',
-  'payment',
-];
+import api, { batchTest, BatchTestResult } from '@/lib/api';
 
 const BatchTestingTab: React.FC = () => {
-  const [selectedIntent, setSelectedIntent] = useState<string>('greeting');
+  const [intents, setIntents] = useState<string[]>([]);
+  const [selectedIntent, setSelectedIntent] = useState<string>('');
   const [numSamples, setNumSamples] = useState<number>(5);
   const [results, setResults] = useState<BatchTestResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchIntents = async () => {
+      try {
+        const response = await api.get('/intents');
+        if (response.data && response.data.intents) {
+          const intentNames = response.data.intents.map((i: any) => i.name);
+          setIntents(intentNames);
+          if (intentNames.length > 0) setSelectedIntent(intentNames[0]);
+        }
+      } catch (err) {
+        console.error("Failed to load intents", err);
+      }
+    };
+    fetchIntents();
+  }, []);
+
 
   const handleRunTest = async () => {
     setIsLoading(true);
@@ -62,7 +67,7 @@ const BatchTestingTab: React.FC = () => {
               onChange={(e) => setSelectedIntent(e.target.value)}
               className="w-full px-4 py-2.5 rounded-lg bg-input border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             >
-              {SAMPLE_INTENTS.map((intent) => (
+              {intents.map((intent) => (
                 <option key={intent} value={intent}>
                   {intent.replace('_', ' ')}
                 </option>
