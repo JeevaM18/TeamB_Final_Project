@@ -1,9 +1,8 @@
-# TeamB_Final_Project
 # 🤖 BotTrainer – LLM-Based NLU Model Trainer & Evaluator
 
 BotTrainer is an **end-to-end LLM-powered Natural Language Understanding (NLU) platform** designed for **intent classification and entity extraction** using **prompt engineering** instead of traditional machine learning classifiers.
 
-The system follows a **JSON-first schema design**, supports **multiple LLM backends** (local **Gemma-3 via Ollama** and **Google Gemini API**), and provides **real-time inference, batch testing, evaluation, and model comparison** through an interactive **Streamlit UI**.
+The system follows a **JSON-first schema design**, supports **multiple local LLM backends** (such as **Gemma-3** and **Qwen 2.5 via Ollama**), and provides **real-time inference, batch testing, evaluation, and model comparison** through a modern **React-based UI**.
 
 ---
 
@@ -12,11 +11,11 @@ The system follows a **JSON-first schema design**, supports **multiple LLM backe
 - 🔹 Prompt-based NLU (no classical ML intent classifiers)
 - 🔹 JSON-driven intent & entity schema
 - 🔹 Schema-guided prompting to reduce hallucination
-- 🔹 Multi-LLM support (Gemma-3 & Gemini)
-- 🔹 Model comparison with standard evaluation metrics
+- 🔹 Multi-LLM support (Gemma-3 & Qwen 2.5)
+- 🔹 Fair model comparison with standard evaluation metrics
 - 🔹 Batch testing & dataset analytics
-- 🔹 Modular, production-style project structure
-- 🔹 Interactive Streamlit dashboard
+- 🔹 Modular, production-style backend architecture
+- 🔹 Modern React UI for interactive analysis
 
 ---
 
@@ -35,10 +34,10 @@ The system follows a **JSON-first schema design**, supports **multiple LLM backe
 
 User Input  
 → Prompt Template + Intent & Entity Schema  
-→ LLM Inference (Gemma-3 / Gemini)  
+→ LLM Inference (Gemma-3 / Qwen 2.5 via Ollama)  
 → Structured JSON Output  
 → Parsing & Validation  
-→ Evaluation, Comparison & Visualization (Streamlit)
+→ Evaluation, Comparison & Visualization (React UI)
 
 ---
 
@@ -65,22 +64,25 @@ Flattened dataset used for evaluation and analytics.
 
 ---
 
-## 🖥️ User Interface (Streamlit)
+## 🖥️ User Interface (React)
 
 ### 🔹 Single Query NLU Tester
-![Single Query](assets/A1.png)
+![Single Query](assets/I1.png)
 
 ### 🔹 Batch Testing
-![Batch Testing](assets/A2.png)
+![Batch Testing](assets/I2.png)
 
 ### 🔹 Evaluation Dashboard
-![Evaluation Dashboard](assets/A3.png)
+![Evaluation Dashboard](assets/I3.png)
 
 ### 🔹 Intent Schema Explorer
-![Intent Schema](assets/A4.png)
+![Intent Schema](assets/I4.png)
 
 ### 🔹 Model Performance Comparison
-![Model Comparison](assets/A5.png)
+![Model Comparison](assets/I5.png)
+
+### 🔹 Query History & Logs
+![History](assets/I6.png)
 
 ---
 
@@ -92,7 +94,7 @@ Both models are evaluated using:
 - Same prompt template
 - Same evaluation metrics
 
-Ensures fair and unbiased comparison.
+This ensures a **fair, unbiased, and reproducible comparison** between LLMs.
 
 ---
 
@@ -101,19 +103,22 @@ Ensures fair and unbiased comparison.
 ```bash
 pip install -r requirements.txt
 ollama pull gemma3
-export GOOGLE_API_KEY="your_api_key_here"
-streamlit run app.py
+ollama pull qwen2.5:3b
+npm install
+npm run dev
+python server.py
 ```
 
 ---
 
 ## 🌱 Future Enhancements
 
-- Entity-level evaluation
-- Prompt debugging UI
-- Multi-language support
-- Multi-turn conversations
+- Entity-level evaluation metrics
+- Prompt debugging & inspection UI
+- Multi-language intent detection
+- Multi-turn, context-aware conversations
 - Docker & cloud deployment
+- Voice input integration
 
 ---
 
@@ -125,4 +130,5 @@ Jeeva M, Nishtha Mishra, Swayam Bora, Riya, Siri Reddy, Srinivas, Utkarsh Gupta
 
 ## ✅ Conclusion
 
-BotTrainer demonstrates that **schema-guided prompt engineering with LLMs** can reliably replace traditional NLU pipelines while remaining scalable, explainable, and model-agnostic.
+BotTrainer demonstrates that **schema-guided prompt engineering with LLMs** can reliably replace traditional NLU pipelines while remaining scalable, explainable, and model-agnostic. 
+The combination of **local LLMs, structured prompts, rigorous evaluation, and a modern UI** makes BotTrainer a strong foundation for next-generation chatbot intelligence.
